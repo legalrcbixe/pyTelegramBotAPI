@@ -1,0 +1,83 @@
+# -*- coding: utf-8 -*-
+# Этот токен невалидный, можете даже не пробовать :)
+token = 284231398:AAHZW60cDZzBelYUhcHfhijzb8ea8RWKpCE
+# Обработчик команд '/start' и '/help'.
+@bot.message_handler(commands=['start', 'help'])
+def handle_start_help(message):
+pass
+# -*- coding: utf-8 -*-
+import time
+import telebot
+from lesson_01 import config
+bot = telebot.TeleBot(config.token)
+@bot.message_handler(func=lambda message: True, content_types=['text'])
+def echo_msg(message):
+bot.send_message(message.chat.id, message.text)
+if __name__ == '__main__':
+bot.polling(none_stop=True)
+from telebot import types
+markup = types.ReplyKeyboardMarkup()
+markup.row('a', 'v')
+markup.row('c', 'd', 'e')
+bot.send_message(message.chat.id, "Choose one letter:", reply_markup=markup)
+param(
+[string]$chat_id = $(Throw "'-chat_id' argument is mandatory"),
+[string]$text = $(Throw "'-text' argument is mandatory"),
+[switch]$markdown,
+[switch]$nopreview
+)
+if($nopreview) { $preview_mode = "True" }
+if($markdown) { $markdown_mode = "Markdown" } else {$markdown_mode = ""}
+Теперь сформируем тело сообщения:
+$payload = @{
+"chat_id" = $chat_id;
+"text" = $text
+"parse_mode" = $markdown_mode;
+"disable_web_page_preview" = $preview_mode;
+}
+И, наконец, осуществим http-запрос к API:
+Invoke-WebRequest `
+-Uri ("https://api.telegram.org/bot{0}/sendMessage" -f $token) `
+-Method Post `
+-ContentType "application/json;charset=utf-8" `
+-Body (ConvertTo-Json -Compress -InputObject $payload)
+Вот и всё! Весь код приведён в следующем листинге:
+param(
+[string]$chat_id = $(Throw "'-chat_id' argument is mandatory"),
+[string]$text = $(Throw "'-text' argument is mandatory"),
+[switch]$markdown,
+[switch]$nopreview
+)
+$token = "284231398:AAHZW60cDZzBelYUhcHfhijzb8ea8RWKpCE
+if($nopreview) { $preview_mode = "True" }
+if($markdown) { $markdown_mode = "Markdown" } else {$markdown_mode = ""}
+$payload = @{
+"chat_id" = $chat_id;
+"text" = $text
+"parse_mode" = $markdown_mode;
+"disable_web_page_preview" = $preview_mode;
+}
+Invoke-WebRequest `
+-Uri ("https://api.telegram.org/bot{0}/sendMessage" -f $token) `
+-Method Post `
+-ContentType "application/json;charset=utf-8" `
+-Body (ConvertTo-Json -Compress -InputObject $payload)
+[DEFAULT]
+[Bot Specific]284231398:AAHZW60cDZzBelYUhcHfhijzb8ea8RWKpCE
+Answer message = 123
+# -*- coding: utf-8 -*-
+import telebot
+import configparser
+from other.another import just_print
+config = configparser.ConfigParser()
+config.read("config.ini")
+bot = telebot.TeleBot(config["DEFAULT"]["Token"])
+@bot.message_handler(func=lambda message: message.text == config["Bot Specific"]["answ
+er message"])
+def reply_to(message):
+bot.send_message(message.chat.id, "Hello there!")
+def main():
+print(just_print())
+bot.polling(none_stop=True)
+if __name__ == '__main__':
+main()
